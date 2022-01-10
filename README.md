@@ -1,5 +1,11 @@
 # Substrate Front End Template
 
+
+
+![avatar](https://github.com/shaobo9856/SubstrateCourse-front-end/blob/main/WX20220110-171940%402x.png)
+
+
+
 This template allows you to create a front-end application that connects to a
 [Substrate](https://github.com/paritytech/substrate) node back-end with minimal
 configuration. To learn about Substrate itself, visit the
