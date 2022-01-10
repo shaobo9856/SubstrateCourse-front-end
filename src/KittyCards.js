@@ -54,8 +54,8 @@ const SetPrice = props => {
   }
 
   const confirmAndClose = (unsub) => {
-    unsub()
-    setOpen(false)
+    setOpen(false);
+    if (unsub && typeof unsub === 'function') unsub();
   }
 
   return <Modal onClose={() => setOpen(false)} onOpen={() => setOpen(true)} open={open}
@@ -63,7 +63,7 @@ const SetPrice = props => {
     <Modal.Header>设置毛孩价格</Modal.Header>
     <Modal.Content><Form>
       <Form.Input fluid label='毛孩 ID' readOnly value={kitty.id}/>
-      <Form.Input fluid label='价格' placeholder='输入价格' onChange={formChange('target')}/>
+      <Form.Input fluid label='Price' placeholder='输入价格' onChange={formChange('target')}/>
     </Form></Modal.Content>
     <Modal.Actions>
       <Button basic color='grey' onClick={() => setOpen(false)}>取消</Button>
@@ -73,7 +73,7 @@ const SetPrice = props => {
         attrs={{
           palletRpc: 'substrateKitties',
           callable: 'setPrice',
-          inputParams: [formValue.target, kitty.id],
+          inputParams: [kitty.id, formValue.target],
           paramFields: [true, true]
         }}
       />
@@ -96,8 +96,7 @@ const KittyCard = props => {
     <Card.Content>
       <Card.Header>ID 号: {id}</Card.Header>
       <Card.Meta style={{ overflowWrap: 'break-word' }}>
-        DNA: <br/>
-        {displayDna}
+        DNA: {displayDna}
       </Card.Meta>
       <Card.Description>
         <p style={{ overflowWrap: 'break-word' }}>

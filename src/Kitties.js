@@ -7,14 +7,13 @@ import { TxButton } from './substrate-lib/components'
 import KittyCards from './KittyCards'
 
 
-// Construct a Kitty ID from storage key
+// Construct a Kitty ID 
 const convertToKittyHash = entry => {
-  // return `0x${entry[0].toJSON().slice(-64)}`;
   console.log('tohuman: ', parseInt(entry[0].toHuman()[0], 10));
   return parseInt(entry[0].toHuman()[0], 10);
 };
 
-// Construct a Kitty object
+// Kitty object
 const constructKitty = (hash, { dna, price, gender, owner }) => ({
   id: hash,
   dna,
@@ -22,8 +21,6 @@ const constructKitty = (hash, { dna, price, gender, owner }) => ({
   gender: gender.toJSON(),
   owner: owner.toJSON()
 });
-
-
 
 export default function Kitties (props) {
   const { api, keyring } = useSubstrate()
@@ -33,18 +30,15 @@ export default function Kitties (props) {
   const [kitties, setKitties] = useState([])
   const [status, setStatus] = useState('')
 
-  // Subscription function for setting Kitty IDs
+  // set Kitty ID
   const subscribeKittyCnt = () => {
     let unsub = null;
 
     const asyncFetch = async () => {
       // Query KittyCnt from runtime
       unsub = await api.query.substrateKitties.kittyCnt(async cnt => {
-        // Fetch all kitty keys
-        // Fetch all Kitty objects using entries()
         const entries = await api.query.substrateKitties.kitties.entries();
-        // Retrieve only the Kitty ID and set to state
-        // console.log('entries: ', entries);
+        console.log('entries: ', entries);
         const hashes = entries.map(convertToKittyHash);
         setKittyHashes(hashes);
       });
@@ -52,30 +46,26 @@ export default function Kitties (props) {
 
     asyncFetch();
 
-    // return the unsubscription cleanup function
+    //cleanup 
     return () => {
       unsub && unsub();
     };
   };
 
-  // Subscription function to construct a Kitty object
   const subscribeKitties = () => {
     let unsub = null;
 
     const asyncFetch = async () => {
       // Get Kitty objects from storage
       unsub = await api.query.substrateKitties.kitties.multi(kittyHashes, kitties => {
-        // Create an array of Kitty objects from `constructKitty`
         const kittyArr = kitties
           .map((kitty, ind) => constructKitty(kittyHashes[ind], kitty.value));
-        // Set the array of Kitty objects to state
         setKitties(kittyArr);
       });
     };
 
     asyncFetch();
 
-    // return the unsubscription cleanup function
     return () => {
       unsub && unsub();
     };
@@ -93,7 +83,7 @@ export default function Kitties (props) {
           accountPair={accountPair} label='创建小毛孩' type='SIGNED-TX' setStatus={setStatus}
           attrs={{
             palletRpc: 'substrateKitties',
-            callable: 'create',
+            callable: 'createKitty',
             inputParams: [],
             paramFields: []
           }}
